@@ -1,0 +1,24 @@
+services:
+
+  app:
+    image: expangea
+    build: ./docker
+    pull_policy: build
+    restart: always
+    volumes:
+      - ./.nginx-unit:/docker-entrypoint.d
+      - ./:/app
+    links:
+      - db
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    restart: always
+    volumes:
+      - ./.data:/var/lib/postgresql/data
+      - ./:/app
+    environment:
+      - POSTGRES_PASSWORD=_postgres_
+    shm_size: '4gb'

@@ -1,0 +1,22 @@
+channels[daphne]
+channels-redis
+django
+# django-debug-toolbar
+# django-extensions
+django-stubs
+inotify
+ipython
+lxml
+mypy
+openpyxl
+openpyxl-stubs
+pillow
+psycopg2-binary
+pyyaml
+redis
+requests
+# requests-toolbelt
+tqdm
+types-requests
+ujson
+xlrd
