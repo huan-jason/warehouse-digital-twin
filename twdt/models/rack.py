@@ -12,7 +12,7 @@ class Rack(Model):
     rack_no = IntegerField()
     depth = IntegerField(db_index=True)
     pallet_positions = IntegerField(db_index=True)
-    filled_pallet_poitions = IntegerField(db_index=True, blank=True, default=0)
+    filled_pallet_positions = IntegerField(db_index=True, blank=True, default=0)
 
     class Meta:
         constraints = [
@@ -29,4 +29,4 @@ class Rack(Model):
         return f"{self.warehouse}::{self.rack_no}"
 
     def occupancy(self) -> float:
-        return self.filled_pallet_poitions * 100 / self.pallet_positions
+        return self.filled_pallet_positions * 100 / self.pallet_positions

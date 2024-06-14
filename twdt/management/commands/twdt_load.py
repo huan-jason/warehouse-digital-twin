@@ -4,7 +4,12 @@ from typing import Any
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from twdt import models
+from twdt.models import (
+    Pallet,
+    Rack,
+    RackLocation,
+    Warehouse,
+)
 
 
 class Command(BaseCommand):
@@ -24,12 +29,14 @@ class Command(BaseCommand):
             for row in  csv.DictReader(fp):
                 warehouse_code: str = row.pop("warehouse_code")
 
-                models.Warehouse.objects.update_or_create(
+                Warehouse.objects.update_or_create(
                     warehouse_code=warehouse_code,
                     defaults=row,
                 )
 
     def load_rack(self, **options: Any) -> None:
+
+        warehouses: dict[str, Warehouse] = {}
 
         with open(f"twdt/fixtures/racks.csv") as fp:
 
@@ -37,24 +44,38 @@ class Command(BaseCommand):
                 warehouse_code: str = row.pop("warehouse_code")
                 rack_no: int = int(row.pop("rack_no"))
 
-                models.Warehouse.objects.update_or_create(
-                    warehouse__warehouse_code=warehouse_code,
+                warehouse: Warehouse = warehouses.setdefault(
+                    warehouse_code,
+                    Warehouse.objects.get(warehouse_code=warehouse_code),
+                )
+
+                Rack.objects.update_or_create(
+                    warehouse=warehouse,
                     rack_no=rack_no,
                     defaults=row,
                 )
 
     def load_rack_location(self, **options: Any) -> None:
 
-        with open(f"twdt/fixtures/rack_locations.csv") as fp:
+        with open(f"twdt/fixtures/racks.csv") as fp:
+
+            racks: dict[str, Rack] = {}
 
             for row in  csv.DictReader(fp):
                 warehouse_code: str = row.pop("warehouse_code")
-                rack_no: int = int(row.pop("rack_no"))
                 location_id: str = row.pop("location_id")
+                rack_no: int = int(location_id[1:3])
 
-                models.Warehouse.objects.update_or_create(
-                    rack__warehouse__warehouse_code=warehouse_code,
-                    rack__rack_no=rack_no,
+                rack: Rack = racks.setdefault(
+                    f"{warehouse_code}::{rack_no}",
+                    Rack.objects.get(
+                        warehouse__warehouse_code=warehouse_code,
+                        rack_no=rack_no,
+                    ),
+                )
+
+                RackLocation.objects.update_or_create(
+                    rack=rack,
                     location_id=location_id,
                     defaults=row,
                 )
@@ -63,14 +84,19 @@ class Command(BaseCommand):
 
         with open(f"twdt/fixtures/pallets.csv") as fp:
 
+            rack_locations: dict[str, RackLocation] = {}
+
             for row in  csv.DictReader(fp):
-                warehouse_code: str = row.pop("warehouse_code")
                 location_id: str = row.pop("location_id")
                 pallet_id: str = row.pop("pallet_id")
 
-                models.Warehouse.objects.update_or_create(
-                    rack_location__rack__warehouse__warehouse_code=warehouse_code,
-                    rack_location__location_id=location_id,
+                rack_location: RackLocation =  rack_locations.setdefault(
+                    location_id,
+                    RackLocation.objects.get(location_id=location_id),
+                )
+
+                Pallet.objects.update_or_create(
+                    rack_location=rack_location,
                     pallet_id=pallet_id,
                     defaults=row,
                 )
