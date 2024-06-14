@@ -29,4 +29,4 @@ class Rack(Model):
         return f"{self.warehouse}::{self.rack_no}"
 
     def occupancy(self) -> float:
-        return self.filled_pallet_positions * 100 / self.pallet_positions
+        return round(self.filled_pallet_positions * 100 / self.pallet_positions)

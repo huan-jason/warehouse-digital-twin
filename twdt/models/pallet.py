@@ -39,5 +39,5 @@ class Pallet(Model):
     def balance_shelf_life_percentage(self) -> float:
         return (
             0 if not self.age else
-            self.balance_shelve_life_to_expire * 100 / self.age
+            round(self.balance_shelve_life_to_expire * 100 / self.age)
         )
