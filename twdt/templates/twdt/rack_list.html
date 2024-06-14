@@ -10,7 +10,7 @@
 
     #rack-list {
         display: grid;
-        grid-template-columns: repeat(6, auto);
+        grid-template-columns: repeat(5, auto);
         gap: 1em 2em;
 
         margin-inline: auto;
@@ -31,7 +31,6 @@
         <div class="header">Pallet Positions</div>
         <div class="header">Filled Pallet Positions</div>
         <div class="header">Occupancy</div>
-        <div></div>
 
         {% for item in racks %}
         <div class="body">
@@ -41,11 +40,6 @@
         <div class="body">{{item.pallet_positions}}</div>
         <div class="body">{{item.filled_pallet_positions}}</div>
         <div class="body">{{item.occupancy}}%</div>
-
-        <form method="POST" action="{{item.rack_no}}/">
-            {% csrf_token %}
-            <button class="btn btn-outline-secondary btn-sm">API Data</button>
-        </form>
         {% endfor %}
     </div>
 
