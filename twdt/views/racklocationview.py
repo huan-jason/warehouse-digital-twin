@@ -33,9 +33,21 @@ class RackLocationView(View):
                 "data": rack_location,
             })
 
+        warehouse: dict[str, Any] = self.remove_keys(rack_location.pop("warehouse"))
+        rack: dict[str, Any] = self.remove_keys(rack_location.pop("rack"))
+        pallets: list[dict[str, Any]] = [
+            self.remove_keys(data)
+            for data in rack_location.pop("pallets")
+        ]
+        rack_location = self.remove_keys(rack_location)
+
+
         import json
         from django.core.serializers.json import DjangoJSONEncoder # zzz
-        data = json.dumps(rack_location, indent=4, cls=DjangoJSONEncoder)
+        data = json.dumps(
+            dict(rack_location=rack_location, warehouse=warehouse, rack=rack, pallets=pallets),
+            indent=4, cls=DjangoJSONEncoder
+        )
 
         return render(request, "twdt/rack_location_detail.html", locals())
 
@@ -49,3 +61,15 @@ class RackLocationView(View):
                 response_type="json",
             ),
         )
+
+    def remove_keys(self, data: dict[str, Any]) -> dict[str, Any]:
+        include_keys: set[str] = {
+            "location_id",
+            "pallet_id",
+        }
+
+        return {
+            key.replace("_", " "): val
+            for key, val in data.items()
+            if not key.endswith("id") or key in include_keys
+        }
