@@ -16,7 +16,7 @@ class Pallet(Model):
     owner = CharField(max_length=256, db_index=True)
     product_code = CharField(max_length=64, db_index=True)
     description = TextField()
-    expiry_date = DateTimeField(),
+    expiry_date = DateTimeField()
     quantity_on_hand = IntegerField()
     age = IntegerField()
     balance_shelve_life_to_expire = IntegerField()

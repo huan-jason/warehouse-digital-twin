@@ -12,6 +12,7 @@ openpyxl
 openpyxl-stubs
 pillow
 psycopg2-binary
+pytz
 pyyaml
 redis
 requests
