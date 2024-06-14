@@ -16,6 +16,9 @@ class WarehouseView(View):
         response_type: str = "",
     ) -> HttpResponse | JsonResponse:
 
+        if not response_type and not request.user.is_authenticated:
+            return HttpResponse("", status=401)
+
         if not warehouse_code:
             return self.warehouse_list(request, response_type)
 

@@ -11,6 +11,9 @@ from twdt.models import RackLocation
 class RackLocationView(View):
 
     def get(self, request: HttpRequest, location_id: str, response_type: str = "") -> HttpResponse | JsonResponse:
+        if not response_type and not request.user.is_authenticated:
+            return HttpResponse("", status=401)
+
         rack_location: QuerySet[RackLocation] = RackLocation.objects.filter(location_id=location_id)
 
         if response_type == "json":

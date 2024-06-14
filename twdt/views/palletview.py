@@ -11,6 +11,9 @@ from twdt.models import Pallet
 class PalletView(View):
 
     def get(self, request: HttpRequest, pallet_id: str, response_type: str = "") -> HttpResponse | JsonResponse:
+        if not response_type and not request.user.is_authenticated:
+            return HttpResponse("", status=401)
+
         pallet: QuerySet[Pallet] = Pallet.objects.filter(pallet_id=pallet_id)
 
         if response_type == "json":

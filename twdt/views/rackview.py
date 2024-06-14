@@ -17,6 +17,9 @@ class RackView(View):
         response_type: str = "",
     ) -> HttpResponse | JsonResponse:
 
+        if not response_type and not request.user.is_authenticated:
+            return HttpResponse("", status=401)
+
         if not rack_no:
             return self.rack_list(request=request, warehouse_code=warehouse_code, response_type=response_type)
 
