@@ -1,0 +1,52 @@
+{% extends "twdt/base.html" %}
+
+
+{% block body_content %}
+
+<style>
+    .header {
+        font-weight: bold;
+    }
+
+    #warehouse-list {
+        display: grid;
+        grid-template-columns: auto auto 1fr 1fr auto;
+        gap: 1em 2em;
+
+        margin-inline: auto;
+        margin-top: 2em;
+    }
+</style>
+
+<div class="container">
+
+    <div id="warehouse-list">
+        <div class="header">Warehouse Code</div>
+        <div class="header">Name</div>
+        <div class="header">Address</div>
+        <div class="header">Remarks</div>
+        <div></div>
+
+        {% for item in warehouses %}
+        <div class="body">
+            <a href="/rack/{{item.warehouse_code}}/">{{item.warehouse_code}}</a>
+        </div>
+        <div class="body">{{item.name}}</div>
+        <div class="body">{{item.address}}</div>
+        <div class="body">{{item.remarks}}</div>
+
+        <form method="POST" action="{{item.warehouse_code}}/">
+            {% csrf_token %}
+            <button class="btn btn-outline-secondary btn-sm">API Data</button>
+        </form>
+        {% endfor %}
+    </div>
+
+    <form class="text-center my-5" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-outline-secondary">API Data</button>
+    </form>
+
+    </form>
+
+    {% endblock body_content %}

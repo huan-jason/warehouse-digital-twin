@@ -1,11 +1,11 @@
-from typing import Optional, cast
+from typing import Any, Optional, cast
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, F
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views import View
 
-from twdt.models import Rack
+from twdt.models import Rack, RackLocation
 
 
 class RackView(View):
@@ -23,18 +23,34 @@ class RackView(View):
         if not rack_no:
             return self.rack_list(request=request, warehouse_code=warehouse_code, response_type=response_type)
 
-        rack: QuerySet[Rack] = Rack.objects.filter(
-            warehouse__warehouse_code=warehouse_code,
-            rack_no=rack_no,
+        qs: QuerySet[Rack] = (Rack.objects
+            .filter(
+                warehouse__warehouse_code=warehouse_code,
+                rack_no=rack_no,
+            )
+            .annotate(warehouse_code=F("warehouse__warehouse_code"))
         )
+        rack: dict[str, Any] = cast(Any, qs.values().first())
+        rack["rack_locations"] = self.get_rack_locations(qs.first())
 
         if response_type == "json":
             return JsonResponse({
                 "data_type": "rack",
-                "data": rack.values().first(),
+                "data": rack,
             })
 
         return render(request, "twdt/rack_detail.html", locals())
+
+    def get_rack_locations(self, rack: Optional[Rack]) -> list[dict[str, Any]]:
+        if not rack: return []
+
+        qs: QuerySet[RackLocation] = rack.racklocation_set.order_by("location_id")
+        rack_locations: list[dict[str, Any]] = list(cast(Any, qs.values()))
+
+        for rack_location, obj in zip(rack_locations, qs):
+            rack_location["pallets"] = list(obj.pallet_set.order_by("pallet_id").values())
+
+        return rack_locations
 
     def post(self,
         request: HttpRequest,

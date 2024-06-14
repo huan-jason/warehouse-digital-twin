@@ -22,14 +22,16 @@ class WarehouseView(View):
         if not warehouse_code:
             return self.warehouse_list(request, response_type)
 
-        warehouse: QuerySet[Warehouse] = Warehouse.objects.filter(
-            warehouse_code=warehouse_code
+        warehouse: dict[str, Any] = cast(Any, Warehouse.objects
+            .filter(warehouse_code=warehouse_code)
+            .values()
+            .first()
         )
 
         if response_type == "json":
             return JsonResponse({
                 "data_type": "warehouse",
-                "data": warehouse.values().first(),
+                "data": warehouse,
             })
 
         return render(request, "twdt/warehouse_detail.html", locals())

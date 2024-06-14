@@ -1,0 +1,64 @@
+{% extends "twdt/base.html" %}
+
+
+{% block body_content %}
+
+<style>
+    .header {
+        font-weight: bold;
+    }
+
+    #warehouse-list {
+        display: grid;
+        grid-template-columns: auto auto 1fr 1fr auto;
+        gap: 1em 2em;
+
+        margin-inline: auto;
+        margin-top: 2em;
+    }
+</style>
+
+<div class="container">
+
+    <div class="header">Warehouse</div>
+    <div class="header">Rack#</div>
+    <div class="header">Location ID</div>
+
+    <div id="warehouse-list">
+        <div class="header">Pallet ID</div>
+        <div class="header">Owner</div>
+        <div class="header">Product Code</div>
+        <div class="header">Description</div>
+        <div class="header">Expiry Date</div>
+        <div class="header">Quantity_on_Hand</div>
+        <div class="header">Age</div>
+        <div class="header">Balance Shelve_Life to Expire</div>
+        <div class="header">Product Group</div>
+        <div></div>
+
+        {% for item in pallets %}
+        <div class="body">{{item.pallet_id}}</div>
+        <div class="body">{{item.owner}}</div>
+        <div class="body">{{item.product_code}}</div>
+        <div class="body">{{item.description}}</div>
+        <div class="body">{{item.expiry_date}}</div>
+        <div class="body">{{item.quantity_on_hand}}</div>
+        <div class="body">{{item.age}}</div>
+        <div class="body">{{item.balance_shelve_life_to_expire}}</div>
+        <div class="body">{{item.product_group}}</div>
+
+        <form method="POST" action="{{item.location_id}}/">
+            {% csrf_token %}
+            <button class="btn btn-outline-secondary btn-sm">API Data</button>
+        </form>
+        {% endfor %}
+    </div>
+
+    <form class="text-center mt-5" method="POST">
+        {% csrf_token %}
+        <button class="btn btn-outline-secondary">API Data</button>
+    </form>
+
+    </form>
+
+    {% endblock body_content %}

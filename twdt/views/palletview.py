@@ -1,4 +1,4 @@
-from typing import Any, cast
+from typing import Any, Optional, cast
 
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -10,7 +10,16 @@ from twdt.models import Pallet
 
 class PalletView(View):
 
-    def get(self, request: HttpRequest, pallet_id: str, response_type: str = "") -> HttpResponse | JsonResponse:
+    def get(self,
+        request: HttpRequest,
+        pallet_id: str,
+        days: Optional[int] = None,
+        response_type: str = "",
+    ) -> HttpResponse | JsonResponse:
+
+        if days:
+            return self.history(request=request, pallet_id=pallet_id, days=days)
+
         if not response_type and not request.user.is_authenticated:
             return HttpResponse("", status=401)
 
@@ -23,6 +32,9 @@ class PalletView(View):
             })
 
         return render(request, "twdt/pallet_detail.html", locals())
+
+    def history(self, request: HttpRequest, pallet_id: str, days: int) -> HttpResponse:
+        return HttpResponse('TO DO')
 
     def post(self, request: HttpRequest, pallet_id: str) -> JsonResponse:
 
