@@ -3,16 +3,14 @@ from typing import Any, cast
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
-from django.views import View
 
 from twdt.models import Rack, RackLocation, Warehouse
+from .baseview import BaseView
 
 
-class RackLocationView(View):
+class RackLocationView(BaseView):
 
-    def get(self, request: HttpRequest, location_id: str, response_type: str = "") -> HttpResponse | JsonResponse:
-        if not response_type and not request.user.is_authenticated:
-            return HttpResponse("", status=401)
+    def _get(self, request: HttpRequest, location_id: str, response_type: str = "") -> HttpResponse | JsonResponse:
 
         rack_location_qs: QuerySet[RackLocation] = RackLocation.objects.filter(location_id=location_id)
         if not rack_location_qs.count():
@@ -51,7 +49,7 @@ class RackLocationView(View):
 
         return render(request, "twdt/rack_location_detail.html", locals())
 
-    def post(self, request: HttpRequest, location_id: str) -> JsonResponse:
+    def _post(self, request: HttpRequest, location_id: str) -> JsonResponse:
 
         return cast(
             JsonResponse,

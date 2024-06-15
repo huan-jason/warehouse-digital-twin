@@ -3,21 +3,18 @@ from typing import Any, Optional, cast
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
-from django.views import View
 
 from twdt.models import Warehouse
+from .baseview import BaseView
 
 
-class WarehouseView(View):
+class WarehouseView(BaseView):
 
-    def get(self,
+    def _get(self,
         request: HttpRequest,
         warehouse_code: Optional[str] = None,
         response_type: str = "",
     ) -> HttpResponse | JsonResponse:
-
-        if not response_type and not request.user.is_authenticated:
-            return HttpResponse("", status=401)
 
         if not warehouse_code:
             return self.warehouse_list(request, response_type)
@@ -36,7 +33,7 @@ class WarehouseView(View):
 
         return render(request, "twdt/warehouse_detail.html", locals())
 
-    def post(self, request: HttpRequest, warehouse_code: Optional[str] = None) -> JsonResponse:
+    def _post(self, request: HttpRequest, warehouse_code: Optional[str] = None) -> JsonResponse:
         return cast(
             JsonResponse,
             self.get(request=request, warehouse_code=warehouse_code, response_type="json"),

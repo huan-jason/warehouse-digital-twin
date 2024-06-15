@@ -3,22 +3,19 @@ from typing import Any, Optional, cast
 from django.db.models import QuerySet, F
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
-from django.views import View
 
 from twdt.models import Rack, RackLocation
+from .baseview import BaseView
 
 
-class RackView(View):
+class RackView(BaseView):
 
-    def get(self,
+    def _get(self,
         request: HttpRequest,
         warehouse_code: str,
         rack_no: Optional[int] = None,
         response_type: str = "",
     ) -> HttpResponse | JsonResponse:
-
-        if not response_type and not request.user.is_authenticated:
-            return HttpResponse("", status=401)
 
         if not rack_no:
             return self.rack_list(request=request, warehouse_code=warehouse_code, response_type=response_type)
@@ -52,7 +49,7 @@ class RackView(View):
 
         return rack_locations
 
-    def post(self,
+    def _post(self,
         request: HttpRequest,
         warehouse_code: str,
         rack_no: Optional[int] = None,

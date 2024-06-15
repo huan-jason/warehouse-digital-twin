@@ -3,14 +3,14 @@ from typing import Any, Optional, cast
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
-from django.views import View
 
 from twdt.models import Pallet
+from .baseview import BaseView
 
 
-class PalletView(View):
+class PalletView(BaseView):
 
-    def get(self,
+    def _get(self,
         request: HttpRequest,
         pallet_id: str,
         days: Optional[int] = None,
@@ -36,7 +36,7 @@ class PalletView(View):
     def history(self, request: HttpRequest, pallet_id: str, days: int) -> HttpResponse:
         return HttpResponse('TO DO')
 
-    def post(self, request: HttpRequest, pallet_id: str) -> JsonResponse:
+    def _post(self, request: HttpRequest, pallet_id: str) -> JsonResponse:
 
         return cast(
             JsonResponse,
