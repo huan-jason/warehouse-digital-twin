@@ -1,11 +1,13 @@
 from typing import Any, Optional, cast
 
 from django.db.models import QuerySet
+from django.forms import model_to_dict
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from twdt.models import Pallet
 from .baseview import BaseView
+from .utils import remove_keys
 
 
 class PalletView(BaseView):
@@ -20,16 +22,25 @@ class PalletView(BaseView):
         if days:
             return self.history(request=request, pallet_id=pallet_id, days=days)
 
-        if not response_type and not request.user.is_authenticated:
-            return HttpResponse("", status=401)
+        pallet_qs: QuerySet[Pallet] = Pallet.objects.filter(pallet_id=pallet_id)
+        pallet_obj: Pallet = pallet_qs.get()
+        pallet_dict: dict[str, Any] = cast(Any, pallet_qs.values().first())
 
-        pallet: QuerySet[Pallet] = Pallet.objects.filter(pallet_id=pallet_id)
+        pallet_dict["rack_location"] = model_to_dict(pallet_obj.rack_location)
+        pallet_dict["rack"] = model_to_dict(pallet_obj.rack_location.rack)
+        pallet_dict["warehouse"] = model_to_dict(pallet_obj.rack_location.rack.warehouse)
+
 
         if response_type == "json":
             return JsonResponse({
                 "data_type": "pallet",
-                "data": pallet.values().first(),
+                "data": pallet_dict,
             })
+
+        warehouse: dict[str, Any] = remove_keys(pallet_dict.pop("warehouse"))
+        rack: dict[str, Any] = remove_keys(pallet_dict.pop("rack"))
+        rack_location: dict[str, Any] = remove_keys(pallet_dict.pop("rack_location"))
+        pallet: dict[str, Any] = remove_keys(pallet_dict)
 
         return render(request, "twdt/pallet_detail.html", locals())
 

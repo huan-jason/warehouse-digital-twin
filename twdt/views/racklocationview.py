@@ -1,11 +1,13 @@
 from typing import Any, cast
 
 from django.db.models import QuerySet
+from django.forms import model_to_dict
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 
-from twdt.models import Rack, RackLocation, Warehouse
+from twdt.models import RackLocation
 from .baseview import BaseView
+from .utils import remove_keys
 
 
 class RackLocationView(BaseView):
@@ -22,8 +24,8 @@ class RackLocationView(BaseView):
         rack_location["pallets"] = list(
             rack_location_obj.pallet_set.order_by("pallet_id").values()
         )
-        rack_location["rack"] = Rack.objects.filter(id=rack_location["rack_id"]).values().first()
-        rack_location["warehouse"] = Warehouse.objects.filter(id=rack_location["rack"]["warehouse_id"]).values().first()
+        rack_location["rack"] =  model_to_dict(rack_location_obj.rack)
+        rack_location["warehouse"] = model_to_dict(rack_location_obj.rack.warehouse)
 
         if response_type == "json":
             return JsonResponse({
@@ -31,21 +33,13 @@ class RackLocationView(BaseView):
                 "data": rack_location,
             })
 
-        warehouse: dict[str, Any] = self.remove_keys(rack_location.pop("warehouse"))
-        rack: dict[str, Any] = self.remove_keys(rack_location.pop("rack"))
+        warehouse: dict[str, Any] = remove_keys(rack_location.pop("warehouse"))
+        rack: dict[str, Any] = remove_keys(rack_location.pop("rack"))
         pallets: list[dict[str, Any]] = [
-            self.remove_keys(data)
+            remove_keys(data)
             for data in rack_location.pop("pallets")
         ]
-        rack_location = self.remove_keys(rack_location)
-
-
-        import json
-        from django.core.serializers.json import DjangoJSONEncoder # zzz
-        data = json.dumps(
-            dict(rack_location=rack_location, warehouse=warehouse, rack=rack, pallets=pallets),
-            indent=4, cls=DjangoJSONEncoder
-        )
+        rack_location = remove_keys(rack_location)
 
         return render(request, "twdt/rack_location_detail.html", locals())
 
@@ -59,15 +53,3 @@ class RackLocationView(BaseView):
                 response_type="json",
             ),
         )
-
-    def remove_keys(self, data: dict[str, Any]) -> dict[str, Any]:
-        include_keys: set[str] = {
-            "location_id",
-            "pallet_id",
-        }
-
-        return {
-            key.replace("_", " "): val
-            for key, val in data.items()
-            if not key.endswith("id") or key in include_keys
-        }

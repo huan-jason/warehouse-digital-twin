@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from .api_key_check import api_key_check
+from .utils import api_key_check
 
 
 @method_decorator(csrf_exempt, name="dispatch")
