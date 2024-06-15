@@ -15,8 +15,8 @@ class BaseView(View):
         if not response_type and not request.user.is_authenticated:
             return HttpResponse("", status=401)
 
-        return self._get(request, *args, response_type=response_type, **kwargs)
+        return self._get(request, *args, response_type=response_type, **kwargs)  # type: ignore
 
     @api_key_check
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> JsonResponse:
-        return self._post(request, *args, **kwargs)
+        return self._post(request, *args, **kwargs)  # type: ignore

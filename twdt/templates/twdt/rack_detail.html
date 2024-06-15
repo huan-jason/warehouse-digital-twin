@@ -4,6 +4,16 @@
 {% block body_content %}
 
 <style>
+    .duplicate-location-id {
+        opacity: 0.5;
+        font-style: italic;
+    }
+
+    .duplicate-location-id::after {
+        content: '*';
+        font-size: 0.7em;
+    }
+
     .header {
         font-weight: bold;
     }
@@ -16,14 +26,19 @@
         display: grid;
         grid-template-columns: repeat(11, auto);
         gap: 0.25em 2em;
-        padding-left: 2em;
     }
 
     .rack-info {
         font-weight: bold;
-        color: var(--bs-primary);
         font-size: larger;
         margin-left: 1em;
+    }
+
+    .rack-info-container {
+        display: grid;
+        grid-template-columns: auto auto;
+        justify-content: start;
+        gap: 0.5em 2em;
     }
 
     .rack-location-container {
@@ -33,31 +48,17 @@
 
 <div class="container">
 
-    <div class="mt-3 mb-4">
-        <div class="rack-info-container">
-            <span class="rack-label">Warehouse:</span>
-            <span class="rack-info">{{rack.warehouse_code}}</span>
-        </div>
-
-        <div>
-            <span class="rack-label">Rack#:</span>
-            <span class="rack-info">{{rack.rack_no}}</span>
-        </div>
-
-        <div class="rack-info-container">
-            <span class="rack-label">Depth:</span>
-            <span class="rack-info">{{rack.depth}}</span>
-        </div>
-
-        <div class="rack-info-container">
-            <span class="rack-label">Pallet Positions:</span>
-            <span class="rack-info">{{rack.pallet_positions}}</span>
-        </div>
-
-        <div class="rack-info-container">
-            <span class="rack-label">Filled Positions:</span>
-            <span class="rack-info">{{rack.filled_pallet_positions}}</span>
-        </div>
+    <div class="rack-info-container mt-3 mb-4">
+        <span class="rack-label">Warehouse:</span>
+        <span class="rack-info">{{rack.warehouse_code}}</span>
+        <span class="rack-label">Rack#:</span>
+        <span class="rack-info">{{rack.rack_no}}</span>
+        <span class="rack-label">Depth:</span>
+        <span class="rack-info">{{rack.depth}}</span>
+        <span class="rack-label">Pallet Positions:</span>
+        <span class="rack-info">{{rack.pallet_positions}}</span>
+        <span class="rack-label">Filled Positions:</span>
+        <span class="rack-info">{{rack.filled_pallet_positions}}</span>
     </div>
 
 
@@ -79,7 +80,12 @@
         {% for pallet in rack_location.pallets %}
 
         <div class="body">
+            {% ifchanged rack_location.location_id %}
             <a href="/rack-location/{{rack_location.location_id}}/">{{rack_location.location_id}}</a>
+            {% else %}
+            <a class="duplicate-location-id"
+                href="/rack-location/{{rack_location.location_id}}/">{{rack_location.location_id}}</a>
+            {% endifchanged %}
         </div>
         <div class="body">{{pallet.pallet_id}}</div>
         <div class="body">{{pallet.owner}}</div>
