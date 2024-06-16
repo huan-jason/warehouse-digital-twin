@@ -27,7 +27,10 @@ class RackView(BaseView):
             )
             .annotate(warehouse_code=F("warehouse__warehouse_code"))
         )
-        rack_obj: Rack = qs.first()
+        rack_obj: Rack | None = qs.first()
+        if not rack_obj:
+            return HttpResponse("", status=404)
+
         rack: dict[str, Any] = cast(Any, qs.values().first())
         rack["rack_locations"] = self.get_rack_locations(rack_obj)
         rack["occupancy"] = f"{rack_obj.occupancy}%"
