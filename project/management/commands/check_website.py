@@ -36,7 +36,7 @@ class Command(BaseCommand):
                 f"{self.style.SUCCESS(str(status))}: {url}"
             )
 
-        return status
+        return status == 200
 
     def handle(self, *args: Any, **options: Any) -> None:
 
