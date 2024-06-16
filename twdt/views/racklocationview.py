@@ -35,6 +35,7 @@ class RackLocationView(BaseView):
 
         warehouse: dict[str, Any] = remove_keys(rack_location.pop("warehouse"))
         rack: dict[str, Any] = remove_keys(rack_location.pop("rack"))
+        rack["occupancy"] = f"{rack_location_obj.rack.occupancy}%"
         pallets: list[dict[str, Any]] = [
             remove_keys(data)
             for data in rack_location.pop("pallets")

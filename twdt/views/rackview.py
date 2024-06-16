@@ -27,8 +27,10 @@ class RackView(BaseView):
             )
             .annotate(warehouse_code=F("warehouse__warehouse_code"))
         )
+        rack_obj: Rack = qs.first()
         rack: dict[str, Any] = cast(Any, qs.values().first())
-        rack["rack_locations"] = self.get_rack_locations(qs.first())
+        rack["rack_locations"] = self.get_rack_locations(rack_obj)
+        rack["occupancy"] = f"{rack_obj.occupancy}%"
 
         if response_type == "json":
             return JsonResponse({

@@ -28,5 +28,6 @@ class Rack(Model):
     def __str__(self) -> str:
         return f"{self.warehouse}::{self.rack_no}"
 
+    @property
     def occupancy(self) -> float:
         return round(self.filled_pallet_positions * 100 / self.pallet_positions)

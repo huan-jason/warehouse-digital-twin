@@ -39,6 +39,7 @@ class PalletView(BaseView):
 
         warehouse: dict[str, Any] = remove_keys(pallet_dict.pop("warehouse"))
         rack: dict[str, Any] = remove_keys(pallet_dict.pop("rack"))
+        rack["occupancy"] = f"{pallet_obj.rack_location.rack.occupancy}%"
         rack_location: dict[str, Any] = remove_keys(pallet_dict.pop("rack_location"))
         pallet: dict[str, Any] = remove_keys(pallet_dict)
 
