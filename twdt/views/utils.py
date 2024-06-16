@@ -42,9 +42,13 @@ def remove_keys(data: dict[str, Any]) -> dict[str, Any]:
         "location_id",
         "pallet_id",
     }
-
+    exclude_keys: set[str] = {
+        "warehouse",
+        "rack",
+    }
     return {
         key.replace("_", " "): val
         for key, val in data.items()
-        if not key.endswith("id") or key in include_keys
+        if (not key.endswith("id") or key in include_keys)
+            and key not in exclude_keys
     }
