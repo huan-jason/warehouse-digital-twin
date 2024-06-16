@@ -11,13 +11,13 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("urls", nargs="+", metavar="URL")
         parser.add_argument("-V", "--verbose", action="store_true")
-        parser.add_argument("-r", "--recipients", metavar="recipients", nargs="*")
+        parser.add_argument("-r", "--recipients")
 
     def check_url(self, url: str, **options: Any) -> bool:
         if "://" not in url:
             url = f"https://{url}"
 
-        response: requests.Response = requests.get(url)
+        response: requests.Response = requests.get(url, timeout=5)
         status: int = response.status_code
 
         if status != 200:
@@ -53,10 +53,15 @@ class Command(BaseCommand):
         if not (recipients := options["recipients"]):
             return
 
+        recipient_list: list[str] = [
+            recipient for item in recipients.split(",")
+            if (recipient := item.strip())
+        ]
+
         send_mail(
-            subject=f"Website Down ({status}): {url}",
+            subject=f"Website Alert ({status}): {url}",
             from_email=None,
-            recipient_list=recipients,
+            recipient_list=recipient_list,
             fail_silently=False,
             message=f"{url} {response.reason}",
         )
