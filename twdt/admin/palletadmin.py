@@ -16,6 +16,7 @@ class PalletAdmin(admin.ModelAdmin):
         "balance_shelve_life_to_expire",
         "balance_shelf_life_percentage",
         "product_group",
+        "created",
     ]
     list_filter = [
         "rack_location__rack__warehouse__warehouse_code",
