@@ -6,6 +6,14 @@
 <style>
     .data-container {
         display: grid;
+        grid-template-columns: repeat(3, auto);
+        justify-content: space-between;
+        align-items: start;
+        gap: 1em 2em;
+    }
+
+    .data-sub-container {
+        display: grid;
         grid-template-columns: auto 1fr;
         gap: 1em 2em;
         margin-inline: auto;
@@ -19,40 +27,49 @@
         font-weight: bold;
     }
 
-    .label--rack-no,
-    .label--rack-no+.data-value,
-    .label--warehouse-code,
-    .label--warehouse-code+.data-value {
-        margin-top: 1em;
+    .whole-row {
+        grid-column: 1/3;
     }
 </style>
 
 <div class="container">
 
     <div class="data-container mt-3">
-        {% if pallet_id %}
-        <h6 class="data-label fw-bold">Pallet ID</h6>
-        <h6 class="data-value text-primary">{{pallet_id}}</h6>
-        {% endif %}
 
-        {% for key, value in rack_location.items %}
-        <div class="data-label label--{{key|slugify}}
-            {% if location_id and key == 'location id' %}fw-bold{% endif %}
-        ">{{key|title}}</div>
-        <div class="data-value
-            {% if location_id and key == 'location id' %}text-primary{% endif %}
-        ">{{value}}</div>
-        {% endfor %}
+        <div class="data-sub-container">
+            {% if pallet_id %}
+            <h6 class="data-label fw-bold">Pallet ID</h6>
+            <h6 class="data-value text-success">{{pallet_id}}</h6>
+            {% endif %}
 
-        {% for key, value in warehouse.items %}
-        <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
-        <div class="data-value">{{value}}</div>
-        {% endfor %}
+            {% for key, value in rack_location.items %}
 
-        {% for key, value in rack.items %}
-        <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
-        <div class="data-value">{{value}}</div>
-        {% endfor %}
+            <div class="data-label label--{{key|slugify}}
+                {% if location_id and key == 'location id' %}fw-bold{% endif %}
+            ">{{key|title}}
+            </div>
+
+            <div class="data-value
+                {% if location_id and key == 'location id' %}text-success{% endif %}
+            ">{{value}}
+            </div>
+
+            {% endfor %}
+        </div>
+
+        <div class="data-sub-container">
+            {% for key, value in warehouse.items %}
+            <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
+            <div class="data-value">{{value}}</div>
+            {% endfor %}
+        </div>
+
+        <div class="data-sub-container">
+            {% for key, value in rack.items %}
+            <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
+            <div class="data-value">{{value}}</div>
+            {% endfor %}
+        </div>
 
     </div>
 
@@ -60,23 +77,22 @@
     {% block pallets %}
 
     {% if not table_view %}
-    <div class="pallets-container">
+
+    <div class="data-sub-container mt-4">
         {% for pallet in pallets %}
-        <hr />
-        <div class="data-container mt-4">
+        <hr class="whole-row" />
 
-            {% for key, value in pallet.items %}
-            <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
-            <div class="data-value">
-                {% if key == 'pallet id' and not hide_link %}
-                <a href="/pallet/{{value}}/">{{value}}</a>
-                {% else %}
-                {{value}}
-                {% endif %}
-            </div>
-            {% endfor %}
-
+        {% for key, value in pallet.items %}
+        <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
+        <div class="data-value">
+            {% if key == 'pallet id' and not hide_link %}
+            <a href="/pallet/{{value}}/">{{value}}</a>
+            {% else %}
+            {{value}}
+            {% endif %}
         </div>
+        {% endfor %}
+
         {% endfor %}
     </div>
     {% endif %}
@@ -104,15 +120,19 @@
     </table>
     {% endif %}
 
+</div>
 
-    {% endblock pallets %}
+{% endblock pallets %}
 
 
-    <form class="text-center my-5" method="POST">
-        {% csrf_token %}
-        <button class="btn btn-outline-secondary">API Data</button>
-    </form>
+<form class="text-center my-5" method="POST">
+    {% csrf_token %}
+    <button class="btn btn-outline-secondary">API Data</button>
+    {% if pallet_id and not days %}
+    <a href="7/" class="btn btn-outline-secondary ms-2">Pallet History</a>
+    {% endif %}
+</form>
 
-    </form>
+</form>
 
-    {% endblock body_content %}
+{% endblock body_content %}
