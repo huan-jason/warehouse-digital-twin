@@ -21,8 +21,8 @@
 
     .label--rack-no,
     .label--rack-no+.data-value,
-    .label--location-id,
-    .label--location-id+.data-value {
+    .label--warehouse-code,
+    .label--warehouse-code+.data-value {
         margin-top: 1em;
     }
 </style>
@@ -30,6 +30,19 @@
 <div class="container">
 
     <div class="data-container mt-3">
+        {% if pallet_id %}
+        <h6 class="data-label fw-bold">Pallet ID</h6>
+        <h6 class="data-value text-primary">{{pallet_id}}</h6>
+        {% endif %}
+
+        {% for key, value in rack_location.items %}
+        <div class="data-label label--{{key|slugify}}
+            {% if location_id and key == 'location id' %}fw-bold{% endif %}
+        ">{{key|title}}</div>
+        <div class="data-value
+            {% if location_id and key == 'location id' %}text-primary{% endif %}
+        ">{{value}}</div>
+        {% endfor %}
 
         {% for key, value in warehouse.items %}
         <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
@@ -41,13 +54,12 @@
         <div class="data-value">{{value}}</div>
         {% endfor %}
 
-        {% for key, value in rack_location.items %}
-        <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
-        <div class="data-value">{{value}}</div>
-        {% endfor %}
-
     </div>
 
+
+    {% block pallets %}
+
+    {% if not table_view %}
     <div class="pallets-container">
         {% for pallet in pallets %}
         <hr />
@@ -56,7 +68,7 @@
             {% for key, value in pallet.items %}
             <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
             <div class="data-value">
-                {% if key == 'pallet id' %}
+                {% if key == 'pallet id' and not hide_link %}
                 <a href="/pallet/{{value}}/">{{value}}</a>
                 {% else %}
                 {{value}}
@@ -67,6 +79,33 @@
         </div>
         {% endfor %}
     </div>
+    {% endif %}
+
+
+    {% if table_view %}
+    <table class="table table-hover table-striped table-responsive mt-5">
+        <thead>
+            <tr>
+                {% for item in pallets.0.keys %}
+                <th class="col--{{item|slugify}}">{{item|title}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for pallet in pallets %}
+            <tr>
+                {% for key, val in pallet.items %}
+                <td class="col--{{item|slugify}}">{{val}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+
+    {% endblock pallets %}
 
 
     <form class="text-center my-5" method="POST">

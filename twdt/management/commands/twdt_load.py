@@ -7,6 +7,7 @@ from django.db import transaction
 
 from twdt.models import (
     Pallet,
+    PalletHistory,
     Rack,
     RackLocation,
     Warehouse,
@@ -27,9 +28,9 @@ class Command(BaseCommand):
 
     def handle(self, *args: Any, **options: Any) -> None:
 
-        with transaction.atomic(): self.load_warehouse(**options)
-        with transaction.atomic(): self.load_rack(**options)
-        with transaction.atomic(): self.load_rack_location(**options)
+        # with transaction.atomic(): self.load_warehouse(**options) zzz
+        # with transaction.atomic(): self.load_rack(**options)
+        # with transaction.atomic(): self.load_rack_location(**options)
         with transaction.atomic(): self.load_pallet(**options)
 
     def load_warehouse(self, **options: Any) -> None:
@@ -103,6 +104,12 @@ class Command(BaseCommand):
             ).replace(tzinfo=timezone.utc)
 
             Pallet.objects.update_or_create(
+                rack_location=rack_location,
+                pallet_id=pallet_id,
+                defaults=row,
+            )
+
+            PalletHistory.objects.update_or_create(
                 rack_location=rack_location,
                 pallet_id=pallet_id,
                 defaults=row,

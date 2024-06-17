@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Iterable, Optional
 
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
@@ -37,7 +37,7 @@ def check_api_key(request: HttpRequest) -> bool:
     return True
 
 
-def remove_keys(data: dict[str, Any]) -> dict[str, Any]:
+def remove_keys(data: dict[str, Any], addtional_keys: Iterable[str] | None = None) -> dict[str, Any]:
     include_keys: set[str] = {
         "location_id",
         "pallet_id",
@@ -45,7 +45,9 @@ def remove_keys(data: dict[str, Any]) -> dict[str, Any]:
     exclude_keys: set[str] = {
         "warehouse",
         "rack",
-    }
+        "rack_location",
+    } | set(addtional_keys or {})
+
     return {
         key.replace("_", " "): val
         for key, val in data.items()

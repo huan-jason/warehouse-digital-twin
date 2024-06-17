@@ -1,15 +1,9 @@
 from django.db.models import (
     CharField,
-    DateTimeField,
-    ForeignKey,
-    IntegerField,
-    Model,
-    PROTECT,
-    TextField,
     UniqueConstraint,
 )
-
 from .palletbase import PalletBase
+
 
 class Pallet(PalletBase):
     pallet_id = CharField(max_length=64, unique=True)

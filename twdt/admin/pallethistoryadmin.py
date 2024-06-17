@@ -6,4 +6,7 @@ from .palletadmin import PalletAdmin
 
 @admin.register(models.PalletHistory)
 class PalletHistoryAdmin(PalletAdmin):
-    pass
+    ordering = [
+        "pallet_id",
+        "-created",
+    ]
