@@ -18,6 +18,13 @@
     .data-value {
         font-weight: bold;
     }
+
+    .label--rack-no,
+    .label--rack-no+.data-value,
+    .label--location-id,
+    .label--location-id+.data-value {
+        margin-top: 1em;
+    }
 </style>
 
 <div class="container">
@@ -25,17 +32,17 @@
     <div class="data-container mt-3">
 
         {% for key, value in warehouse.items %}
-        <div class="data-label">{{key|title}}</div>
+        <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
         <div class="data-value">{{value}}</div>
         {% endfor %}
 
         {% for key, value in rack.items %}
-        <div class="data-label">{{key|title}}</div>
+        <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
         <div class="data-value">{{value}}</div>
         {% endfor %}
 
         {% for key, value in rack_location.items %}
-        <div class="data-label">{{key|title}}</div>
+        <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
         <div class="data-value">{{value}}</div>
         {% endfor %}
 
@@ -47,9 +54,9 @@
         <div class="data-container mt-4">
 
             {% for key, value in pallet.items %}
-            <div class="data-label">{{key|title}}</div>
+            <div class="data-label label--{{key|slugify}}">{{key|title}}</div>
             <div class="data-value">
-                {% if forloop.first %}
+                {% if key == 'pallet id' %}
                 <a href="/pallet/{{value}}/">{{value}}</a>
                 {% else %}
                 {{value}}
