@@ -12,8 +12,7 @@ def api_key_check(f) -> Callable[..., HttpResponse]:
     @wraps(f)
     def wrapper(self, request:HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if not check_api_key(request):
-            return HttpResponse("Invalid API key", status=418)
-
+            return HttpResponse("Invalid API key", status=401)
         return f(self, request, *args, **kwargs)
 
     return wrapper
