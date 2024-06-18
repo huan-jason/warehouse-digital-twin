@@ -1,7 +1,9 @@
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
+from django.urls import reverse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
@@ -13,7 +15,8 @@ class BaseView(View):
 
     def get(self, request: HttpRequest, *args: Any, response_type: str = "", **kwargs: Any) -> HttpResponse | JsonResponse:
         if not response_type and not request.user.is_authenticated:
-            return HttpResponse("", status=401)
+            url: str = reverse("login")
+            return redirect(f"{url}?next=/")
 
         return self._get(request, *args, response_type=response_type, **kwargs)  # type: ignore
 

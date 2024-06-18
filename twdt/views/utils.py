@@ -26,7 +26,10 @@ def check_api_key(request: HttpRequest) -> bool:
     if not api_key:
         return False
 
-    obj: Optional[ApiKey] = ApiKey.objects.filter(api_key=api_key).first()
+    obj: Optional[ApiKey] = ApiKey.objects.filter(
+        api_key=api_key,
+        expiry__gt = timezone.now(),
+    ).first()
     if not obj:
         return False
 

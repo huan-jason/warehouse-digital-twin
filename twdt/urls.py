@@ -5,6 +5,8 @@ from . import views
 
 
 urlpatterns = [
+    path("device/", views.DeviceLocationView.as_view(), name="device_location_view"),
+
     path("warehouse/<warehouse_code>/", views.WarehouseView.as_view(), name="warehouse_view"),
     path("warehouse/", views.WarehouseView.as_view(), name="warehouse_view"),
 

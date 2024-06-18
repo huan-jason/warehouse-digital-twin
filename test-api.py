@@ -33,7 +33,6 @@ def get_args() -> argparse.Namespace:
 
 def main() -> None:
     args: argparse.Namespace = get_args()
-    print(args.token)
     response: requests.Response = requests.post(
         url=args.url,
         headers={
