@@ -16,7 +16,14 @@ class DeviceLocationView(BaseView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         return HttpResponse("", status=405)
 
-    def _post(self, request: HttpRequest, name: str, days: int | None = None) -> JsonResponse:
+    def _post(self,
+        request: HttpRequest,
+        name: str | None = None,
+        days: int | None = None,
+    ) -> JsonResponse:
+
+        if not name:
+            return self.new_location(request)
 
         if days:
             return self.history(request=request, name=name, days=days)
@@ -32,30 +39,12 @@ class DeviceLocationView(BaseView):
             "data": device_dict,
         })
 
-    def _put(self, request: HttpRequest) -> JsonResponse:
-        if not { "name", "position" } <= set(request.POST.keys()):
-            return JsonResponse({}, status=400)
-
-        try:
-            coordinates: dict[str, Any] = json.loads(request.POST["position"])
-        except Exception:
-            return JsonResponse({}, status=400)
-
-        return JsonResponse({
-            "data": model_to_dict(
-                DeviceLocation.new(
-                    name=request.POST["name"],
-                    coordinates=coordinates,
-                )
-            ),
-        })
-
     def history(self, request: HttpRequest, name: str, days: int) -> JsonResponse:
 
         device_location_qs: QuerySet[DeviceLocation, Any] = cast(Any, DeviceLocation.objects
             .filter(
                 device__name=name,
-                created__date__gte=timezone.now().date() - timedelta(days=days),
+                created__gte=timezone.now().date() - timedelta(days=days),
             )
             .order_by("-created")
             .values()
@@ -65,3 +54,21 @@ class DeviceLocationView(BaseView):
             "data": list(device_location_qs),
         })
 
+    def new_location(self, request: HttpRequest) -> JsonResponse:
+        data: dict[str, Any] = json.loads(request.body)
+        if not { "name", "position" } <= set(data.keys()):
+            return JsonResponse({}, status=400)
+
+        try:
+            coordinates: dict[str, Any] = data["position"]
+        except Exception:
+            return JsonResponse({}, status=400)
+
+        return JsonResponse({
+            "data": model_to_dict(
+                DeviceLocation.new(
+                    name=data["name"],
+                    coordinates=coordinates,
+                )
+            ),
+        })

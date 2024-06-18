@@ -19,9 +19,6 @@ class BaseView(View):
     def _post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> JsonResponse:
         raise NotImplementedError
 
-    def _put(self, request: HttpRequest, *args: Any, **kwargs: Any) -> JsonResponse:
-        raise NotImplementedError
-
     def get(self, request: HttpRequest, *args: Any, response_type: str = "", **kwargs: Any) -> HttpResponse | JsonResponse:
         if not response_type and not request.user.is_authenticated:
             url: str = reverse("login")
@@ -32,9 +29,4 @@ class BaseView(View):
     @api_key_check
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> JsonResponse:
         return self._post(request, *args, **kwargs)
-
-    @api_key_check
-    def put(self, request: HttpRequest, *args: Any, **kwargs: Any) -> JsonResponse:
-        return self._put(request, *args, **kwargs)
-
 

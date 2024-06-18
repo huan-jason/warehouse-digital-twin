@@ -41,4 +41,4 @@
 
 ## Device Location Upload API
 - Endpoint: ``` /device/```
-- Method: PUT
+- Method: POST
