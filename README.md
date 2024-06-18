@@ -11,7 +11,7 @@
 - Endpoint: ``` /warehouse/<warehouse_code>/```
 - Method: POST
 
-## Rack-list API
+## Rack List API
 - Endpoint: ``` /rack/<warehouse_code>/```
 - Method: POST
 
@@ -19,7 +19,7 @@
 - Endpoint: ``` /rack/<warehouse_code>/<rack_no>/```
 - Method: POST
 
-## Rack-Location Details API
+## Rack Location Details API
 - Endpoint: ``` /rack-location/<location_id>/```
 - Method: POST
 
@@ -30,3 +30,15 @@
 ## Pallet History API
 - Endpoint: ``` /pallet/<pallet_id>/<days>/```
 - Method: POST
+
+## Device Location API
+- Endpoint: ``` /device/<device-name>/```
+- Method: POST
+
+## Device Location History API
+- Endpoint: ``` /device/<device-name>/<days>/```
+- Method: POST
+
+## Device Location Upload API
+- Endpoint: ``` /device/```
+- Method: PUT

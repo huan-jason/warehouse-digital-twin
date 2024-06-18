@@ -23,7 +23,7 @@ class ApiKey(Model):
     expiry = DateTimeField()
     remarks = TextField()
     created = DateTimeField(auto_now_add=True)
-    updated = DateTimeField(auto_now=True)
+    updated = DateTimeField(auto_now=True, db_index=True)
     ip_addresses = JSONField(null=True, blank=True)
 
     def __str__(self) -> str:

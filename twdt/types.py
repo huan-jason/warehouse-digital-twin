@@ -1,4 +1,6 @@
-from typing import TypedDict
+from typing import Any, Protocol, TypedDict
+
+from django.http import HttpRequest, HttpResponse, JsonResponse
 
 
 class Coordinates(TypedDict):

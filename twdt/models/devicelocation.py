@@ -11,7 +11,7 @@ from django.db.models import (
 class DeviceLocation(Model):
     device = ForeignKey('twdt.device', on_delete=PROTECT)
     coordinates = JSONField()
-    created = DateField(auto_now_add=True)
+    created = DateField(auto_now_add=True, db_index=True)
 
     class Meta:
         ordering = [

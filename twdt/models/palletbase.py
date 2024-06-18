@@ -19,7 +19,7 @@ class PalletBase(Model):
     age = IntegerField()
     balance_shelve_life_to_expire = IntegerField()
     product_group = CharField(max_length=64, db_index=True)
-    created = DateTimeField(auto_now_add=True)
+    created = DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
         abstract = True

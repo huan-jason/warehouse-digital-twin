@@ -17,6 +17,7 @@ class Device(Model):
     def __str__(self) -> str:
         return self.name
 
+    @property
     def coordinates(self) -> Coordinates | None:
         from .devicelocation import DeviceLocation
 

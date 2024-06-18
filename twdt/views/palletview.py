@@ -38,7 +38,6 @@ class PalletView(BaseView):
         if days:
             pallet_dict["history"] = pallets
 
-
         if response_type == "json":
             return JsonResponse({
                 "data_type": "pallet",
