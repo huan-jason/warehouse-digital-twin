@@ -1,6 +1,7 @@
-# APIs
+# Warehouse Digital Twin Data Layer APIs
 
 - Host: https://digital-twin.expangea.com
+- Required request header: **X-API-KEY**
 
 ## Warehouse API
 - Endpoint: /warehouse/
