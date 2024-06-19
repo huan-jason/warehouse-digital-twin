@@ -17,8 +17,13 @@ class Command(BaseCommand):
         if "://" not in url:
             url = f"https://{url}"
 
-        response: requests.Response = requests.get(url, timeout=5)
-        status: int = response.status_code
+        try:
+            response: requests.Response = requests.get(url, timeout=5)
+            status: int = response.status_code
+
+        except Exception as exc:
+            print(exc)
+            status = 0
 
         if status != 200:
             self.stdout.write(
