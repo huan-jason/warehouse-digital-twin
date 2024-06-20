@@ -13,8 +13,8 @@ shift $((OPTIND-1))
 websites='
 https://expangea.com
 https://app-test.expangea.com
-https://karnanilab.com
 https://imomdb.bii.a-star.edu.sg
+https://karnanilab.com
 '
 recipients='
 jason.huan@tollgroup.com,
@@ -30,6 +30,8 @@ main() {
     --verbose \
     --recipient "$recipients" \
     $websites
+
+  echo
 }
 
 main "$@" &>>$logfile

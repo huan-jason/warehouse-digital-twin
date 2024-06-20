@@ -17,12 +17,16 @@ class Command(BaseCommand):
         if "://" not in url:
             url = f"https://{url}"
 
+        response: requests.Response | None = None
+        err_msg: str = ""
+
         try:
-            response: requests.Response = requests.get(url, timeout=5)
+            response = requests.get(url, timeout=5)
             status: int = response.status_code
 
         except Exception as exc:
-            print(exc)
+            err_msg = str(exc)
+            print(err_msg)
             status = 0
 
         if status != 200:
@@ -32,7 +36,7 @@ class Command(BaseCommand):
             self.notify(
                 url=url,
                 status=status,
-                response=response,
+                reason=response.reason if response else err_msg,
                 **options,
             )
 
@@ -51,7 +55,7 @@ class Command(BaseCommand):
     def notify(self,
             url: str,
             status: int,
-            response: requests.Response,
+            reason: str,
             **options: Any,
         ) -> None:
 
@@ -68,5 +72,5 @@ class Command(BaseCommand):
             from_email=None,
             recipient_list=recipient_list,
             fail_silently=False,
-            message=f"{url} {response.reason}",
+            message=f"{url} {reason}",
         )
