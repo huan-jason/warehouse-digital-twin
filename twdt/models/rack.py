@@ -26,7 +26,7 @@ class Rack(Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.warehouse}::{self.rack_no}"
+        return f"{self.warehouse} :: {self.rack_no}"
 
     @property
     def occupancy(self) -> float:

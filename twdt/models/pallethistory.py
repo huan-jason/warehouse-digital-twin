@@ -9,4 +9,4 @@ class PalletHistory(PalletBase):
         verbose_name_plural = "Pallet history"
 
     def __str__(self) -> str:
-        return f"{self.rack_location}::{self.pallet_id}::{self.created}"
+        return f"{self.rack_location} :: {self.pallet_id} :: {self.created}"

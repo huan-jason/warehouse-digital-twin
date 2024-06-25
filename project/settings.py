@@ -36,6 +36,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'url_check',
     'twdt',
     'project',
     'django.contrib.admin',

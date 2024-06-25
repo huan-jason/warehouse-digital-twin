@@ -25,4 +25,4 @@ class RackLocation(Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.rack}::{self.location_id}"
+        return f"{self.rack} :: {self.location_id}"

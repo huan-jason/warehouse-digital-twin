@@ -20,7 +20,7 @@ class DeviceLocation(Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.device}::{self.created}"
+        return f"{self.device} :: {self.created}"
 
     @classmethod
     def new(cls, name: str, coordinates: dict[str, Any]) -> 'DeviceLocation':

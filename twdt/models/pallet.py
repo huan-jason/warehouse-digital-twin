@@ -20,4 +20,4 @@ class Pallet(PalletBase):
         ]
 
     def __str__(self) -> str:
-        return f"{self.rack_location}::{self.pallet_id}"
+        return f"{self.rack_location} :: {self.pallet_id}"
