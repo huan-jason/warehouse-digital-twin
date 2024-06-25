@@ -10,6 +10,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("urls", nargs="+", metavar="URL")
+        parser.add_argument("-t", "--timeout", type=int, default=10)
         parser.add_argument("-V", "--verbose", action="store_true")
         parser.add_argument("-r", "--recipients")
 
@@ -21,7 +22,7 @@ class Command(BaseCommand):
         err_msg: str = ""
 
         try:
-            response = requests.get(url, timeout=5)
+            response = requests.get(url, timeout=options["timeout"])
             status: int = response.status_code
 
         except Exception as exc:

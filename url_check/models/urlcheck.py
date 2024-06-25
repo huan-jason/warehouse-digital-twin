@@ -15,6 +15,7 @@ class UrlCheck(Model):
     url = URLField()
     notification_group = ForeignKey("url_check.NotificationGroup", on_delete=PROTECT)
     remarks = TextField(null=True, blank=True)
+    timeout = IntegerField(default=10)
     status_code = IntegerField(null=True, blank=True, default=200)
     check_text = TextField(null=True, blank=True)
 

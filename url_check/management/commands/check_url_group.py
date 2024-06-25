@@ -19,7 +19,10 @@ class Command(BaseCommand):
         url = f"https://{url}" if "://" not in url else url
 
         try:
-            response: requests.Response | None = requests.get(url, timeout=5)
+            response: requests.Response | None = requests.get(
+                url,
+                timeout=url_check.timeout,
+            )
             response = cast(requests.Response, response)
             status: int = response.status_code
             err_msg: str = response.reason

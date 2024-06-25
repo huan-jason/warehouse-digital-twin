@@ -16,6 +16,7 @@ class UrlCheckAdmin(admin.ModelAdmin):
         "url",
         "notification_group",
         "remarks",
+        "timeout",
         "status_code",
         "check_text",
     ]
