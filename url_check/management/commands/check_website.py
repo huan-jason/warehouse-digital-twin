@@ -1,3 +1,4 @@
+from time import sleep
 from typing import Any
 
 from django.core.mail import send_mail
@@ -13,6 +14,7 @@ class Command(BaseCommand):
         parser.add_argument("-t", "--timeout", type=int, default=10)
         parser.add_argument("-V", "--verbose", action="store_true")
         parser.add_argument("-r", "--recipients")
+        parser.add_argument("-s", "--sleep", type=int, default=0)
 
     def check_url(self, url: str, **options: Any) -> bool:
         if "://" not in url:
@@ -50,8 +52,13 @@ class Command(BaseCommand):
 
     def handle(self, *args: Any, **options: Any) -> None:
 
-        for url in options["urls"]:
-            self.check_url(url, **options)
+        while True:
+            for url in options["urls"]:
+                self.check_url(url, **options)
+
+            if not (sleep_seconds := options["sleep"]): break
+            self.stderr.write(f"Sleeping {sleep_seconds}s...")
+            sleep(sleep_seconds)
 
     def notify(self,
             url: str,

@@ -1,3 +1,4 @@
+from time import sleep
 from typing import Any, cast
 
 import requests
@@ -13,6 +14,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument("url_group")
         parser.add_argument("-V", "--verbose", action="store_true")
+        parser.add_argument("-s", "--sleep", type=int, default=0)
 
     def check_url(self, url_check: UrlCheck, **options: Any) -> bool:
         url: str = url_check.url
@@ -65,8 +67,13 @@ class Command(BaseCommand):
         if not url_group:
             raise Exception(f"Invalid URL group: {name}")
 
-        for obj in url_group.urlcheck_set.all():
-            self.check_url(obj, **options)
+        while True:
+            for obj in url_group.urlcheck_set.all():
+                self.check_url(obj, **options)
+
+            if not (sleep_seconds := options["sleep"]): break
+            self.stderr.write(f"Sleeping {sleep_seconds}s...")
+            sleep(sleep_seconds)
 
     def notify(self,
             url: str,

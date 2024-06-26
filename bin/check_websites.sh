@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 set -eu
 
-logfile=${1:-${HOME}/check_websites.log}
+LOGFILE=${1:-${HOME}/check_websites.log}
+SLEEP=0
 
-while getopts 'd' opt; do
+while getopts 'ds:' opt; do
   case $opt in
-    d) logfile=/dev/stdout;;
+    d) LOGFILE=/dev/stdout;;
+    s) SLEEP=$OPTARG;;
   esac
 done
 shift $((OPTIND-1))
@@ -29,10 +31,11 @@ main() {
   docker compose exec app ./manage.py check_website \
     --verbose \
     --recipient "$recipients" \
+    --sleep=$SLEEP \
     $websites
 
   echo
 }
 
-main "$@" &>>$logfile
+main "$@" &>>$LOGFILE
 
