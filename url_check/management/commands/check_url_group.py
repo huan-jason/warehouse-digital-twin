@@ -12,7 +12,7 @@ from url_check.models import UrlGroup, UrlCheck, UrlCheckFailure
 class Command(BaseCommand):
 
     def add_arguments(self, parser: CommandParser) -> None:
-        parser.add_argument("url_group")
+        parser.add_argument("url_groups", nargs="+", metavar='URL-Group')
         parser.add_argument("-V", "--verbose", action="store_true")
         parser.add_argument("-s", "--sleep", type=int, default=0)
 
@@ -42,36 +42,51 @@ class Command(BaseCommand):
                 )
             return True
 
+        return self.check_url_error(
+            url_check=url_check,
+            url=url,
+            status=status,
+            err_msg=err_msg,
+        )
+
+    def check_url_error(self, *,
+        url_check: UrlCheck,
+        url: str,
+        status: int,
+        err_msg: str,
+    ) -> bool:
+
         self.stdout.write(
             f"{self.style.ERROR(str(status))}: {url}"
         )
-
         UrlCheckFailure.objects.create(
             url_check=url_check,
             remarks=err_msg,
             status_code=status,
         )
-
         self.notify(
             url=url,
             status=status,
             reason=err_msg,
             url_check=url_check,
         )
-
         return False
 
-    def handle(self, *args: Any, **options: Any) -> None:
-        name: str = options["url_group"]
+    def check_url_group(self, name: str, **options: Any) -> None:
         url_group: UrlGroup | None = UrlGroup.objects.filter(name=name).first()
         if not url_group:
             raise Exception(f"Invalid URL group: {name}")
 
+        for obj in url_group.urlcheck_set.all():
+            self.check_url(obj, **options)
+
+    def handle(self, *args: Any, **options: Any) -> None:
         while True:
-            for obj in url_group.urlcheck_set.all():
-                self.check_url(obj, **options)
+            for name in options["url_groups"]:
+                self.check_url_group(name, **options)
 
             if not (sleep_seconds := options["sleep"]): break
+
             self.stderr.write(f"Sleeping {sleep_seconds}s...")
             sleep(sleep_seconds)
 
@@ -86,14 +101,12 @@ class Command(BaseCommand):
             .urlchecknotification_set
                 .values_list("email", flat=True)
         )
-
         if url_check.notification_group:
             recipient_list += list(url_check
                 .notification_group
                 .notification_set
                 .values_list("email", flat=True)
             )
-
         send_mail(
             subject=f"Website Alert ({status}): {url}",
             from_email=None,
