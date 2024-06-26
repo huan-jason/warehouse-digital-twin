@@ -1,0 +1,44 @@
+{% extends "twdt/base.html" %}
+
+
+{% block body_content %}
+
+<style>
+    .button-disabled {
+        pointer-events: none;
+        background-color: transparent;
+        color: gray;
+    }
+</style>
+
+<div class="container">
+
+    <h4 class="my-5">Upload Rack Locations</h4>
+
+    <form class="my-5" method="POST" enctype="multipart/form-data">
+
+        <label class="form-label">CSV File</label>
+        <input name="csv_file" class="form-control" type="file" onchange="onChangeFile(event)" />
+
+        <button id="submit-button" class="btn btn-primary button-disabled my-5" type="submit">Upload</button>
+
+        {% csrf_token %}
+    </form>
+
+    <div class="text-danger fs-5 fw-bold">
+        {{ error_message }}
+    </div>
+
+</div>
+
+
+<script>
+    var onChangeFile = (event) => {
+        if (!event.target.value.trim()) {
+            return htmx.addClass('#submit-button', 'button-disabled')
+        }
+        htmx.removeClass('#submit-button', 'button-disabled')
+    }
+</script>
+
+{% endblock body_content %}
