@@ -88,10 +88,44 @@
         {{ error_message }}
     </div>
 
+
+    <hr />
+
+
+    <form id="form2" class="my-5" method="POST" enctype="multipart/form-data" action="?csv">
+
+        <label class="form-label">
+            <span>CSV File</span>
+            <a href="/static/generate_rack_locations.csv" class="btn btn-sm ms-1" title="Download template" download>
+                <span class="material-symbols--download"></span>
+            </a>
+        </label>
+        <input name="csv_file" class="form-control" type="file" onclick="clearFile()" onchange="onChangeFile(event)" />
+
+        <button id="upload-button" class="btn btn-primary button-disabled mt-4" type="submit">Upload</button>
+
+        {% csrf_token %}
+
+        <div class="text-danger fs-5 fw-bold mt-3">
+            {{ upload_error_message }}
+        </div>
+    </form>
+
 </div>
 
 
 <script>
+    var clearFile = () => {
+        document.querySelector('input[name=csv_file]').value = ''
+    }
+
+    var onChangeFile = (event) => {
+        if (!event.target.value.trim()) {
+            return htmx.addClass('#upload-button', 'button-disabled')
+        }
+        htmx.removeClass('#upload-button', 'button-disabled')
+    }
+
     var validate = () => {
         htmx.addClass('#submit-button', 'button-disabled')
         const form = document.forms.form1

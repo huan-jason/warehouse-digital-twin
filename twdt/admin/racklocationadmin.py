@@ -11,6 +11,7 @@ class RackLocationAdmin(admin.ModelAdmin):
     ]
     list_filter = [
         "rack__warehouse__warehouse_code",
+        "rack__rack_no",
     ]
     search_fields = [
         "location_id",
