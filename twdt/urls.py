@@ -20,6 +20,7 @@ urlpatterns = [
     path("pallet/<pallet_id>/<int:days>/", views.PalletView.as_view(), name="pallet_history_view"),
     path("pallet/<pallet_id>/", views.PalletView.as_view(), name="pallet_view"),
 
+    path("generate-rack-locations/", views.GenerateRackLocationsView.as_view(), name="generate-rack-locations"),
     path("upload-rack-location/", views.UploadRackLocationView.as_view(), name="upload-rack-location"),
 
     path("", lambda request: redirect("warehouse_view"), name="index_view"),

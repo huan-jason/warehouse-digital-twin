@@ -3,15 +3,11 @@ from io import StringIO
 from typing import Any, cast
 
 from django.db import transaction
-from django.forms import model_to_dict
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
-from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from twdt.models import RackLocation, Rack, Warehouse
-from .baseview import BaseView
-from .utils import remove_keys
 
 
 class UploadRackLocationView(View):
