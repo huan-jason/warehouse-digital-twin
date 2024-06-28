@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v$)z@g+nncqn0j+08v!f%ndr3&8(=vas8#4o^z*z-dvfv(4rvk'
+SECRET_KEY = None
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -149,10 +149,11 @@ ADMINS = [
 
 
 # email
-from .settings_email import *
-
-try: from .settings_local import *
-except ModuleNotFoundError: pass
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = 'admin@expangea.com'
 
 
 # SECURITY
@@ -163,3 +164,5 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
+
+from .settings_local import *
