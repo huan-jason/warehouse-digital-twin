@@ -3,3 +3,15 @@
 {% block title %}Toll Warehouse Digital Twin{% endblock %}
 
 {% block branding %}Toll Warehouse Digital Twin{% endblock %}
+
+{% block content %}
+
+{{ block.super }}
+
+<br class="clear" />
+
+<div class="password-reset-link" style="margin-top: 2em;">
+    <a href="{% url 'password_reset' %}">Forgotten your password or username?</a>
+</div>
+
+{% endblock content %}
