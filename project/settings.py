@@ -122,6 +122,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+DATE_FORMAT = "%d-%b-%Y"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -137,24 +138,18 @@ MEDIA_ROOT  = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 #####
 
-# email
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'admin@expangea.com'
-EMAIL_HOST_PASSWORD = 'Tollinnovation1!'
-DEFAULT_FROM_EMAIL = 'admin@expangea.com'
-
-DATE_FORMAT = "%d-%b-%Y"
 
 # misc
 ADMINS = [
     ('Jason', 'jason.huan@tollgroup.com'),
 ]
 
+
+# email
+from .settings_email import *
 
 try: from .settings_local import *
 except ModuleNotFoundError: pass
